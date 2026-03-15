@@ -38,7 +38,7 @@ Intel Xeon E3-1240 v5
 4 Cores / 8 Threads
 
 Memory  
-64GB DDR4 ECC
+48GB DDR4 ECC
 
 ## Storage
 
