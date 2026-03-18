@@ -125,7 +125,6 @@ Always verify the correct interface (ens18, ens19, etc.) before troubleshooting.
 Troubleshooting issues were inconsistent and unclear.
 
 **Fix:**  
-```text
 Layer 3 → IP / Routing
 Layer 4 → Firewall Rules
 Layer 7 → Application (Apache / PHP)
