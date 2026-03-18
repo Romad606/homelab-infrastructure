@@ -53,8 +53,12 @@ Segmentation enables traffic control, realistic firewall rule creation, attack s
 
 ## 2. Firewall Rules Must Be Specific (NOT “ANY”)
 ### Initial mistake:
-### Correct approach:
+Source: ANY
+Destination: ANY
 
+### Correct approach:
+Source: DMZ net
+Destination: ANY
 
 **Lesson Learned:**  
 Using `ANY` breaks segmentation and reduces visibility. Always define source, destination, and interface.
@@ -62,6 +66,7 @@ Using `ANY` breaks segmentation and reduces visibility. Always define source, de
 ---
 
 ## 3. pfSense is the Core Traffic Control Point
+LAN ↔ pfSense ↔ DMZ ↔ SECURITY ↔ WAN
 
 **Lesson Learned:**  
 pfSense acts as the router, firewall, and enforcement point for all network traffic.
@@ -110,6 +115,9 @@ No IP address (only loopback)
 ```bash
 ip a
 
+##Lesson Learned:
+Always verify the correct interface (ens18, ens19, etc.) before troubleshooting.
+
 ---
 ## 9. Layered Troubleshooting Method Works Best
 
@@ -123,6 +131,8 @@ Layer 4 → Firewall Rules
 Layer 7 → Application (Apache / PHP)
 Backend → Database (MySQL)
 
+Lesson Learned:
+Troubleshoot systematically by layer instead of guessing. If everythign is designed right and test locally and works there its most likely a firewall rule blocking or misconfigured
 ---
 
 ## 10. Apache Running Does NOT Mean PHP is Working
