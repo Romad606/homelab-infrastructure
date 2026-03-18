@@ -105,10 +105,12 @@ Clear labeling improves readability, troubleshooting, and scalability.
 ### Issue:
 No IP address (only loopback)
 
+---
 ### Fix:
 ```bash
 ip a
 
+---
 ## 9. Layered Troubleshooting Method Works Best
 
 **Issue:**  
@@ -121,15 +123,209 @@ Layer 4 → Firewall Rules
 Layer 7 → Application (Apache / PHP)
 Backend → Database (MySQL)
 
+---
+
 ## 10. Apache Running Does NOT Mean PHP is Working
 
-**Issue:**
+##Issue:
 Raw PHP displayed in browser.
 
-**Fix:**
+##Fix:
 
 sudo apt install php libapache2-mod-php php-mysql
 sudo systemctl restart apache2
 
-Lesson Learned:
+##Lesson Learned:
 If PHP appears in the browser, it is not being executed.
+
+---
+
+## 11. Missing PHP Modules Break Applications
+
+##Issue:
+DVWA returned a fatal error related to mysqli.
+
+##Fix:
+
+sudo apt install php8.3-mysql
+sudo systemctl restart apache2
+
+##Lesson Learned:
+Applications depend on required PHP modules. Missing dependencies cause runtime failures.
+
+---
+
+##  12. File Structure Integrity is Critical
+
+##Issue:
+Key DVWA files such as setup.php were missing.
+
+##Fix:
+
+cd /var/www/html
+sudo rm -rf DVWA
+sudo git clone https://github.com/digininja/DVWA.git
+
+##Lesson Learned:
+File operations can silently break applications. Always verify structure after moving or copying files.
+
+---
+
+## 13. Linux is Case-Sensitive
+
+##Issue:
+Incorrect file paths and URLs caused access problems.
+
+##Fix:
+
+DVWA ≠ dvwa
+
+##Lesson Learned:
+Case matters for commands, file paths, and URLs.
+
+---
+
+## 14. Database Connectivity Must Be Verified Independently
+
+##Issue:
+The application could not connect to the database.
+
+##Fix:
+
+mysql -u dvwa -p
+
+##Lesson Learned:
+Always validate database access separately before troubleshooting the application.
+
+---
+
+## 15. Configuration Files Control Behavior
+
+##Issue:
+DVWA was not connecting correctly to the database.
+
+##Fix:
+Edit the DVWA configuration file:
+
+/var/www/html/DVWA/config/config.inc.php
+
+Set:
+
+$_DVWA['db_user'] = 'dvwa';
+$_DVWA['db_password'] = 'password';
+
+##Lesson Learned:
+Small configuration mistakes can break the entire application.
+
+---
+
+## 16. PHP Settings Can Cause 500 Errors
+
+##Issue:
+DVWA returned a 500 Internal Server Error.
+
+##Fix:
+In php.ini, set:
+
+allow_url_include = On
+display_errors = On
+
+Then restart Apache:
+
+sudo systemctl restart apache2
+
+##Lesson Learned:
+Application behavior can depend on PHP settings.
+
+---
+
+## 17. 500 Errors Usually Mean Backend Failures
+
+##Issue:
+The web server was reachable, but the application failed internally.
+
+##Fix:
+Check:
+
+PHP configuration
+
+Missing PHP modules
+
+Database connectivity
+
+Apache error logs
+
+##Lesson Learned:
+A 500 error means the application failed internally, not that the web server is unreachable.
+
+---
+
+## 18. Permissions Matter
+
+Issue:
+Application failed or behaved unexpectedly due to file access issues.
+
+##Fix:
+
+sudo chown -R www-data:www-data /var/www/html/DVWA
+sudo chmod -R 755 /var/www/html/DVWA
+
+##Lesson Learned:
+Incorrect permissions can silently break web applications.
+
+---
+
+## 19. OpenSSH Can Be Installed After Deployment
+
+##Issue:
+OpenSSH Server was not installed during initial setup.
+
+##Fix:
+
+sudo apt install openssh-server -y
+sudo systemctl enable ssh
+
+##Lesson Learned:
+Missing services can be installed after deployment without rebuilding the system.
+
+---
+
+## 20. ISO/CD Unmount Errors Are Often Non-Critical
+
+##Issue:
+System displayed Failed unmounting cdrom.mount during reboot.
+
+##Fix:
+Verify system boots correctly. Optionally detach ISO after installation.
+
+##Lesson Learned:
+Not all errors are critical — validate impact before troubleshooting.
+
+---
+
+## 21. Storage Tiering Matters
+
+##Issue:
+Different workloads required different performance levels.
+
+##Fix:
+
+Use SSD for critical systems
+
+Use HDD for lab workloads
+
+##Lesson Learned:
+Match storage performance to workload requirements.
+
+---
+
+## 22. qcow2 is Better for Lab VMs
+
+##Issue:
+Choosing the correct disk format for lab environments.
+
+##Fix:
+Use qcow2 instead of raw.
+
+##Lesson Learned:
+qcow2 supports snapshots and rollback, making it ideal for lab and testing environments.
