@@ -342,7 +342,7 @@ qcow2 supports snapshots and rollback, making it ideal for lab and testing envir
 ## 23. Turn on Monitoring QEMU Agent
 
 ##Issue:
-Could not see the IP adrees of the VMs or constrol graceful shutdowns so I needed to turn on QEMU-Guest-Agent for each machine. Everyone required a different download and install process.
+Could not see the IP address on the VMs summary page or control graceful shutdowns so I needed to turn on QEMU-Guest-Agent for each machine. Everyone required a different download and install process.
 
 ##Fix:
 Secutity Onion and pfSense run in a fixed environments with lots of dependancies so they protect themselves so you cant just download the qemu-guest-agent but need to download it to a very specifc spot.
