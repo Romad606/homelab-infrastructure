@@ -28,10 +28,10 @@ vmbr3 → SECURITY (10.10.30.0/24)
         │        │        │
      vmbr1    vmbr2    vmbr3
       LAN      DMZ     SECURITY
- 10.10.10.x 10.10.20.x 10.10.30.x
+ 10.10.10.10 10.10.20.100 10.10.30.10
      │         │         │
  Windows     DVWA    Security Onion
- AD/DC       Server     (Planned)
+ AD/DC       Server     Monitoring 
 
 
 # 🧠 Lessons Learned – Proxmox Home Lab (DVWA + pfSense + Segmentation)
