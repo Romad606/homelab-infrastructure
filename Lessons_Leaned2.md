@@ -16,7 +16,7 @@ vmbr0 → WAN (ISP Router / Internet)
 vmbr1 → LAN (10.10.10.0/24)
 vmbr2 → DMZ (10.10.20.0/24)
 vmbr3 → SECURITY (10.10.30.0/24)
-
+vmbr4 → SPAN/TAP (No IP address)
                 Internet
                     │
                 [vmbr0]
