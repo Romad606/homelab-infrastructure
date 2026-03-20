@@ -338,3 +338,15 @@ Use qcow2 instead of raw.
 
 ##Lesson Learned:
 qcow2 supports snapshots and rollback, making it ideal for lab and testing environments.
+
+## 23. Turn on Monitoring QEMU Agent
+
+##Issue:
+Could not see the IP adrees of the VMs or constrol graceful shutdowns so I needed to turn on QEMU-Guest-Agent for each machine. Everyone required a different download and install process.
+
+##Fix:
+Secutity Onion and pfSense run in a fixed environments with lots of dependancies so they protect themselves so you cant just download the qemu-guest-agent but need to download it to a very specifc spot.
+for pfsense: pkg install -y qemu-guest-agent
+for security onion: sudo /usr/bin/dnf install qemu-guest-agent -y
+For webserver: sudo apt-get install qemu-guest-agent -y (standard)
+For Windows: go to the device manager and select the virto ISO file I mounted to the the CD for all the drivers adn download the qemu guest 64 driver. 
