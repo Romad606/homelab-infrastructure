@@ -1,189 +1,168 @@
-# 🛡️ SIEM Pipeline Lab – Suricata + ELK Stack
+# 🛡️ SIEM Pipeline Lab — Suricata + ELK Stack
 
 ## 📌 Overview
 
-This project documents the design and implementation of a Security Information and Event Management (SIEM) pipeline using Suricata and the ELK Stack (Elasticsearch, Logstash, Kibana).
+This project documents the design, implementation, and validation of a Security Information and Event Management (SIEM) pipeline using Suricata and the ELK Stack (Elasticsearch, Logstash, Kibana).
 
-The goal of this lab is to move beyond tool usage and develop a deeper understanding of how detection systems, logging pipelines, and visualization platforms work together in real-world security operations environments.
+The goal of this lab is to move beyond tool usage and develop a deeper understanding of how **detection systems, log pipelines, and visualization platforms** work together in real-world security operations environments.
 
-This project is part of my broader cybersecurity home lab and is focused on building practical skills aligned with security engineering and SOC workflows.
+This project is part of a broader cybersecurity home lab focused on building **security engineering and SOC-level skills through hands-on system design, troubleshooting, and validation**.
 
 ---
 
 # 🎯 Objectives
 
 - Deploy Suricata for network-based intrusion detection  
-- Build a log ingestion pipeline using Logstash  
-- Store and index events in Elasticsearch  
-- Visualize and analyze data using Kibana  
-- Simulate attacks and validate detection capabilities  
-- Develop troubleshooting and tuning methodologies  
+- Build a log ingestion and processing pipeline  
+- Store and index security events for search and analysis  
+- Visualize alerts and detection patterns  
+- Simulate attacks and validate detection end-to-end  
+- Develop structured troubleshooting and tuning methodologies  
 
 ---
 
 # 🧱 High-Level Architecture
 
+```text
 Kali (Attacker)
-↓
-DVWA (Target)
-↓
-Network Traffic
-↓
-Suricata IDS
-↓
-Logstash Pipeline
-↓
-Elasticsearch
-↓
-Kibana Dashboard
+        ↓
+pfSense (Routing / Firewall)
+        ↓
+Target Systems (DVWA / Servers)
+        ↓
+Suricata (Detection Engine)
+        ↓
+Logstash (Parsing)
+        ↓
+Elasticsearch (Indexing)
+        ↓
+Kibana (Visualization / Analysis)
+🏗️ Project Phases
+🔹 Phase 1 — Detection Foundation (Suricata)
 
+Established network-based intrusion detection capability.
 
----
+Key Work:
 
-# 🏗️ Project Phases
+Deployed Suricata on a dedicated monitoring VM
+Configured interface binding and rule updates
+Validated traffic visibility using tcpdump
+Generated attack traffic using Nmap
 
-## 🔹 Phase 1 — Detection Foundation (Suricata)
-Establish network-based detection capability by deploying and configuring Suricata.
+Outcome:
+Ability to detect and log network activity in real time
 
-**Outcome:**  
-Ability to detect and log network activity.
+👉 View Phase 1
 
----
+🔹 Phase 2 — Log Pipeline (ELK Stack)
 
-## 🔹 Phase 2 — Log Pipeline (Logstash)
-Ingest and parse Suricata logs into a structured format.
+Built centralized log ingestion, parsing, and storage.
 
-**Outcome:**  
-Ability to process and normalize security data.
+Key Work:
 
----
+Ingested Suricata logs (eve.json) into Logstash
+Parsed and indexed logs in Elasticsearch
+Designed storage architecture (SSD for compute, HDD for data)
+Verified index creation and data flow
 
-## 🔹 Phase 3 — Data Storage (Elasticsearch)
-Store and index log data for efficient searching and querying.
+Outcome:
+Ability to process, store, and search structured security data
 
-**Outcome:**  
-Ability to store and retrieve security events.
+👉 View Phase 2
 
----
+🔹 Phase 3 — Visualization & Detection Engineering
 
-## 🔹 Phase 4 — Visualization (Kibana)
-Create dashboards and visualizations for analysis and monitoring.
+Transformed raw data into actionable insights and validated detection workflows.
 
-**Outcome:**  
-Ability to interpret and analyze security data.
+Key Work:
 
----
+Built Kibana index patterns and visualizations
+Created dashboards for alerts, IPs, and signatures
+Simulated attacks and validated detection pipeline
+Analyzed alert patterns and began tuning detections
 
-## 🔹 Phase 5 — Attack Simulation & Validation
-Generate attack traffic and validate detection across the pipeline.
+Outcome:
+Ability to visualize, analyze, and interpret security events
 
-**Outcome:**  
-End-to-end detection validation.
+👉 View Phase 3
 
----
-
-## 🔹 Phase 6 — Tuning & Optimization
-Refine detection rules and reduce false positives.
-
-**Outcome:**  
-Improved signal-to-noise ratio and detection quality.
-
----
-
-## 🔹 Phase 7 — Documentation & Reporting
-Document architecture, build steps, and lessons learned.
-
-**Outcome:**  
-Professional project documentation and portfolio artifact.
-
----
-
-# 🌐 Lab Environment
+🌐 Lab Environment
 
 This project is deployed within a segmented home lab environment built on Proxmox.
 
 Key components include:
 
-- pfSense (routing and firewall)
-- Segmented networks (LAN, DMZ, Security)
-- Kali Linux (attack simulation)
-- DVWA (vulnerable target application)
-- Ubuntu Server (SIEM pipeline host)
+pfSense (routing and firewall)
+Segmented networks (LAN, DMZ, Security)
+Kali Linux (attack simulation)
+DVWA (vulnerable target application)
 
----
+Ubuntu Server (SIEM pipeline host)
+🛠️ Technologies Used
+Suricata (IDS/IPS)
+Elasticsearch (data storage and indexing)
+Logstash (log ingestion and parsing)
+Kibana (data visualization)
+Proxmox (virtualization platform)
+pfSense (network segmentation and routing)
+jq, tcpdump, Nmap (analysis and testing tools)
 
-# 🛠️ Technologies Used
+📊 Skills Demonstrated
+Network segmentation and routing
+Firewall rule design and troubleshooting
+Intrusion detection system deployment
+SIEM pipeline engineering (ELK stack)
+Log parsing and normalization
+Security event analysis and visualization
+Multi-layer troubleshooting (OSI model)
+Detection validation through attack simulation
 
-- Suricata (IDS/IPS)
-- Elasticsearch (data storage and indexing)
-- Logstash (log ingestion and parsing)
-- Kibana (data visualization)
-- Proxmox (virtualization platform)
-- pfSense (network segmentation and routing)
-
----
-
-# 📊 Skills Developed
-
-- Network security monitoring  
-- Intrusion detection and analysis  
-- SIEM pipeline design  
-- Log parsing and normalization  
-- Threat detection workflows  
-- Troubleshooting across multiple layers (network → application)  
-
----
-
-# 🧠 Key Learning Focus
+🧠 Key Learning Focus
 
 This project emphasizes:
+Building security systems from the ground up
+Understanding how detection pipelines actually function
+Troubleshooting across multiple infrastructure layers
+Validating detection through controlled attack simulation
+Improving signal-to-noise through detection tuning
 
-- Understanding how detection systems generate and process data  
-- Building security pipelines from scratch  
-- Troubleshooting real-world issues across infrastructure layers  
-- Applying structured problem-solving approaches  
+💥 Key Takeaways
+Detection depends on network visibility and placement
+Security tools require intentional configuration and tuning
+Logs must be parsed and structured to be actionable
+SIEM systems are pipelines, not standalone tools
+Effective security requires end-to-end validation
 
----
+🚀 Future Enhancements
+Advanced detection tuning and rule suppression
+Expanded Kibana dashboards and alerting workflows
+Traffic mirroring (SPAN) for full network visibility
+Cloud logging integration (AWS / Azure)
+AI/ML-based detection exploration
 
-# 🚀 Future Enhancements
+📁 Repository Structure
+homelab-infrastructure/
+│
+├── phase-1-detection-foundation.md
+├── phase-2-log-pipeline-elk.md
+├── phase-3-visualization-and-detection-engineering.md
+│
+├── screenshots/
+├── diagrams/
+└── README.md
 
-- SIEM tuning and rule optimization  
-- Integration with cloud platforms (AWS / Azure)  
-- Advanced detection engineering  
-- Automation and alerting workflows  
-- Threat hunting scenarios  
+👤 Author
 
----
-
-# 📁 Repository Structure
-
-/phase-1-suricata/
-/phase-2-logstash/
-/phase-3-elasticsearch/
-/phase-4-kibana/
-/phase-5-testing/
-/docs/
-
-
----
-
-# 👤 Author
-
-Christopher Albrecht  
-Cybersecurity | Network Engineering | Cloud Security  
+Christopher Albrecht
+Cybersecurity | Network Engineering | Cloud Security
 
 Certifications:
-- CompTIA A+
-- CompTIA Network+
-- CompTIA Security+
-- ISC2 Certified in Cybersecurity (CC)
-- AWS Cloud Certification
-- Microsoft Azure Certification
 
----
+CompTIA A+
+CompTIA Network+
+CompTIA Security+
+ISC2 Certified in Cybersecurity (CC)
+AWS Cloud Certification
+Microsoft Azure Certification
 
-# 📌 Summary
 
-This project demonstrates the ability to design, build, and validate a security monitoring pipeline from the ground up, with a focus on practical application, troubleshooting, and real-world security workflows.
-
-The goal is not just to use tools, but to understand how they work together to detect, analyze, and respond to security events.
