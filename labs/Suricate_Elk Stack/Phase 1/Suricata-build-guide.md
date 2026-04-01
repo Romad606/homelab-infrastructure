@@ -13,14 +13,14 @@ This guide documents the step-by-step process for deploying a Suricata-based int
 - **OS:** Ubuntu Server 24.04 LTS  
 - **Machine Type:** q35  
 - **CPU:** 4 cores  
-- **RAM:** 8–12 GB  
+- **RAM:** 12 GB  
 
 ---
 
 ## Storage
 
 ### Disk 1 (SSD — OS & Services)
-- Size: 40–100 GB  
+- Size: 100 GB  
 - Purpose:
   - Ubuntu OS  
   - Suricata  
