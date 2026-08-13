@@ -20,6 +20,7 @@ In addition to documenting my own lab, the goal of this repository is to provide
 This lab supports preparation for certifications including:
 
 - CompTIA Security+
+- CompTIA Network+
 - CompTIA Linux+
 - CompTIA CySA+
 - AWS Cloud certifications
