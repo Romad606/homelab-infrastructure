@@ -514,7 +514,7 @@ I wanted enough understanding to create a functional interface that connected us
 
 ---
 
-# 🇺🇸 GameNest Localization
+# GameNest Localization
 
 GameNest originally defaulted to Chinese.
 
