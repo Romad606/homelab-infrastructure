@@ -258,10 +258,13 @@ Consumer Router
        │
        ▼
 pfSense
+       │
+       ▼
 10.10.10.107:3001
        │
        ▼
 GameNest
+```
 
 Testing from a phone with Wi-Fi disabled provided an important validation step.
 
@@ -269,7 +272,9 @@ If the application worked over cellular data, the traffic was actually coming fr
 
 That turned a basic connectivity test into a practical lesson in NAT, routing, firewalls, and service exposure.
 
-🔐 Phase 2 — Stop Exposing Applications Directly
+---
+
+# 🔐 Phase 2 — Stop Exposing Applications Directly
 
 Direct port forwarding proved that the architecture worked.
 
@@ -277,45 +282,47 @@ It was not the architecture I wanted to keep.
 
 I did not want family members remembering addresses such as:
 
+```text
 PUBLIC-IP:3000
 PUBLIC-IP:3001
+```
 
 I also did not want every application to require another publicly exposed application port.
 
-Instead, I introduced a reverse proxy.
+Instead, I introduced a **reverse proxy**.
 
-I selected Caddy.
+I selected **Caddy**.
 
 Caddy gave the project:
 
-A single HTTPS entry point
-
-Reverse proxy functionality
-
-Automatic TLS certificate management
-
-HTTP-to-HTTPS redirection
-
-Simple configuration
-
-The ability to route multiple applications through one server
+- A single HTTPS entry point
+- Reverse proxy functionality
+- Automatic TLS certificate management
+- HTTP-to-HTTPS redirection
+- Simple configuration
+- The ability to route multiple applications through one server
 
 The public architecture could now center around standard HTTPS traffic on TCP port 443.
 
-🌎 Dynamic DNS
+---
+
+# 🌎 Dynamic DNS
 
 A residential public IP address may change.
 
 Hard-coding the public IP into bookmarks or giving it to family members would therefore be unreliable.
 
-I used DuckDNS to provide a stable hostname that could follow the public IP address.
+I used **DuckDNS** to provide a stable hostname that could follow the public IP address.
 
 The primary site became:
 
+```text
 bambam-labs.duckdns.org
+```
 
 This introduced another useful infrastructure layer:
 
+```text
 Human-friendly hostname
         │
         ▼
@@ -326,15 +333,19 @@ Current public IP
         │
         ▼
 Home network
+```
 
 pfSense handles the Dynamic DNS update so the hostname can continue pointing toward the home network if the Internet Service Provider (ISP) changes the public address.
 
-🔒 HTTPS and Caddy
+---
+
+# 🔒 HTTPS and Caddy
 
 Caddy became the public-facing web server and reverse proxy.
 
 The final conceptual configuration is:
 
+```caddy
 bambam-labs.duckdns.org {
     root * /var/www/bambam
     file_server
@@ -347,11 +358,13 @@ rumpus.bambam-labs.duckdns.org {
 gamenest.bambam-labs.duckdns.org {
     reverse_proxy localhost:3001
 }
+```
 
 Caddy handles the external HTTPS connection and forwards the request to the appropriate internal application.
 
 For example:
 
+```text
 Family Member's Phone
         │
         │ HTTPS
@@ -375,17 +388,22 @@ localhost:3000
         │
         ▼
 Rumpus Container
+```
 
 The user never needs to know that TCP port 3000 exists internally.
 
-🧪 A Design That Failed — And Why
+---
+
+# 🧪 A Design That Failed — And Why
 
 One of the most useful parts of the project came from a design that initially looked cleaner.
 
 I originally attempted to host the applications as paths underneath one hostname:
 
+```text
 bambam-labs.duckdns.org/rumpus/
 bambam-labs.duckdns.org/gamenest/
+```
 
 Caddy could easily proxy those paths to the correct containers.
 
@@ -393,11 +411,15 @@ However, the applications themselves were not designed to operate from those sub
 
 For example, GameNest requested resources using paths such as:
 
+```text
 /style.css
+```
 
 rather than:
 
+```text
 /gamenest/style.css
+```
 
 The result was interesting.
 
@@ -409,56 +431,71 @@ Rumpus produced a white page.
 
 The reverse proxy itself was working.
 
-The problem was application path awareness.
+The problem was **application path awareness**.
 
 Both applications assumed they were running at the root:
 
+```text
 /
+```
 
-Trying to solve the problem by individually proxying CSS, JavaScript, images, APIs, WebSockets, and other paths would create a fragile configuration.
+Trying to solve the problem by individually proxying CSS, JavaScript, images, Application Programming Interfaces (APIs), WebSockets, and other paths would create a fragile configuration.
 
 Instead, I changed the architecture.
 
-🧭 Subdomains Instead of Subdirectories
+---
+
+# 🧭 Subdomains Instead of Subdirectories
 
 Each application received its own hostname:
 
+```text
 bambam-labs.duckdns.org
 rumpus.bambam-labs.duckdns.org
 gamenest.bambam-labs.duckdns.org
+```
 
-Now every application can operate from /, exactly as it expects.
+Now every application can operate from `/`, exactly as it expects.
 
+```text
 rumpus.bambam-labs.duckdns.org/
                  │
                  ▼
               Rumpus /
+```
 
 and:
 
+```text
 gamenest.bambam-labs.duckdns.org/
                  │
                  ▼
              GameNest /
+```
 
 This eliminated the root-relative asset and routing problems.
 
 This became one of the most valuable architecture lessons from the project:
 
-A reverse proxy can route a request anywhere, but the application behind it still has assumptions about where it lives. Infrastructure design has to account for application behavior.
+> **A reverse proxy can route a request anywhere, but the application behind it still has assumptions about where it lives. Infrastructure design has to account for application behavior.**
 
-🏠 BamBam Labs Landing Page
+---
+
+# 🏠 BamBam Labs Landing Page
 
 Once the individual applications had clean public URLs, I wanted one simple front door for the family.
 
 That became:
 
+```text
 https://bambam-labs.duckdns.org
+```
 
 The landing page is intentionally simple HTML/CSS.
 
 It provides links to the available game systems without requiring anyone to remember individual hostnames.
 
+```text
               BamBam Labs
                   │
           ┌───────┴───────┐
@@ -467,6 +504,7 @@ It provides links to the available game systems without requiring anyone to reme
           │               │
           ▼               ▼
    rumpus.bambam...  gamenest.bambam...
+```
 
 Building the landing page also gave me a practical introduction to basic HTML and CSS.
 
@@ -474,7 +512,9 @@ I wasn't trying to become a front-end developer through this project.
 
 I wanted enough understanding to create a functional interface that connected users to the infrastructure I had built.
 
-🇺🇸 GameNest Localization
+---
+
+# 🇺🇸 GameNest Localization
 
 GameNest originally defaulted to Chinese.
 
@@ -484,56 +524,75 @@ Investigating the problem required entering the running container, locating the 
 
 The relevant client-side initialization was changed from:
 
+```javascript
 if (!window.__ACTIVE_LANG) window.__ACTIVE_LANG = 'zh';
+```
 
 to:
 
+```javascript
 if (!window.__ACTIVE_LANG) window.__ACTIVE_LANG = 'en';
+```
 
-The existing English language implementation already supported en.
+The existing English language implementation already supported `en`.
 
 This was a small change, but it provided another useful lesson:
 
-Containers are not black boxes. When troubleshooting requires it, I can inspect the application, understand how it behaves, identify the smallest appropriate change, and validate the result.
+> **Containers are not black boxes. When troubleshooting requires it, I can inspect the application, understand how it behaves, identify the smallest appropriate change, and validate the result.**
 
-🔬 Testing Methodology
+---
 
-I tried not to treat "the webpage appeared" as sufficient proof that something worked.
+# 🔬 Testing Methodology
+
+I tried not to treat **"the webpage appeared"** as sufficient proof that something worked.
 
 Different layers were tested independently.
 
-Confirm Docker Ports
+## Confirm Docker Containers and Ports
 
+```bash
 docker ps
+```
 
-Confirm Local Application Availability
+## Confirm Local Application Availability
 
+```bash
 curl -I http://localhost:3001/
+```
 
-Confirm Application Assets
+## Confirm Application Assets
 
+```bash
 curl -I http://localhost:3001/style.css
+```
 
-Confirm Listening Ports
+## Confirm Listening Ports
 
+```bash
 ss -lntp
+```
 
-Confirm DNS
+## Confirm DNS
 
+```bash
 nslookup bambam-labs.duckdns.org
 nslookup rumpus.bambam-labs.duckdns.org
 nslookup gamenest.bambam-labs.duckdns.org
+```
 
-Validate Caddy Before Applying Changes
+## Validate Caddy Before Applying Changes
 
+```bash
 sudo caddy validate --config /etc/caddy/Caddyfile
+```
 
-Test From Outside the Network
+## Test From Outside the Network
 
 The applications were tested from a mobile phone using cellular data.
 
 This helped separate:
 
+```text
 Application problem
         vs.
 Docker problem
@@ -547,25 +606,29 @@ Firewall/NAT problem
 DNS problem
         vs.
 Internet accessibility problem
+```
 
 That troubleshooting mindset became as important as the final configuration.
 
-🛡️ Security Approach
+---
+
+# 🛡️ Security Approach
 
 Making something publicly accessible changes the security model.
 
 The goal was therefore not simply:
 
-Make the game server reachable.
+> **Make the game server reachable.**
 
 The goal was:
 
-Expose only what needs to be reachable while keeping the rest of the lab private.
+> **Expose only what needs to be reachable while keeping the rest of the lab private.**
 
 The architecture evolved away from directly exposing individual application ports toward a controlled HTTPS entry point.
 
 The intended public path is:
 
+```text
 Internet
    │
    │ HTTPS :443
@@ -578,75 +641,65 @@ Caddy
    ├── BamBam Labs
    ├── Rumpus
    └── GameNest
+```
 
 The rest of the Ubuntu server and internal lab do not need to become public simply because these applications are public.
 
 Future hardening work will continue to improve:
 
-Network segmentation
+- Network segmentation
+- Access control
+- Logging
+- Patch management
+- Backup strategy
+- Exposure reduction
+- Monitoring
 
-Access control
+---
 
-Logging
-
-Patch management
-
-Backup strategy
-
-Exposure reduction
-
-Monitoring
-
-💾 Known-Good State
+# 💾 Known-Good State
 
 After completing the initial deployment, the environment was validated from an external cellular connection.
 
 Confirmed working:
 
-BamBam Labs landing page
-
-HTTPS
-
-DuckDNS resolution
-
-Caddy reverse proxy
-
-Rumpus public subdomain
-
-GameNest public subdomain
-
-Rumpus gameplay
-
-GameNest game catalog
-
-GameNest styling/assets
-
-GameNest English default
-
-Landing-page navigation
-
-Docker containers
-
-External cellular access
+- BamBam Labs landing page
+- HTTPS
+- DuckDNS resolution
+- Caddy reverse proxy
+- Rumpus public subdomain
+- GameNest public subdomain
+- Rumpus gameplay
+- GameNest game catalog
+- GameNest styling/assets
+- GameNest English default
+- Landing-page navigation
+- Docker containers
+- External cellular access
 
 A Proxmox snapshot was taken at this milestone before further development.
 
+```text
 Known-Good-Public-Gaming-2026-10-06
+```
 
 This provides a rollback point before future experimentation.
 
-Note: A Proxmox snapshot is a rollback mechanism, not a replacement for a proper backup strategy.
+> **Note:** A Proxmox snapshot is a rollback mechanism, not a replacement for a proper backup strategy.
 
-💡 What This Project Actually Taught Me
+---
+
+# 💡 What This Project Actually Taught Me
 
 The biggest lesson was not any individual command or technology.
 
 It was seeing how the pieces depend on one another.
 
-A user tapping Play Rumpus looks incredibly simple.
+A user tapping **Play Rumpus** looks incredibly simple.
 
 Behind that button is something closer to:
 
+```text
 HTML
  ↓
 DNS
@@ -676,6 +729,7 @@ Container
 Web Application
  ↓
 WebSocket / Application State
+```
 
 The finished experience hides almost all of that complexity.
 
@@ -683,9 +737,11 @@ That is exactly what good infrastructure should do.
 
 The user should not need to understand my network architecture to play a game.
 
-I do.
+**I do.**
 
-Why This Project Matters to Me
+---
+
+# Why This Project Matters to Me
 
 This project reflects the way I prefer to learn.
 
@@ -707,6 +763,7 @@ Each component solved a problem created by the project before it.
 
 That created a natural progression:
 
+```text
 I want my family to play a game remotely.
                 ↓
 The game needs a server.
@@ -740,93 +797,94 @@ Subdomains provide cleaner application boundaries.
 My family needs an easy way to find everything.
                 ↓
 Build a simple landing page.
+```
 
 That progression is what makes this more than a game server.
 
-It is a small example of designing infrastructure around a purpose, discovering constraints, testing assumptions, learning from failures, and evolving the architecture until the technology becomes almost invisible to the people using it.
+It is a small example of **designing infrastructure around a purpose, discovering constraints, testing assumptions, learning from failures, and evolving the architecture until the technology becomes almost invisible to the people using it.**
 
-🚀 Future Development
+---
+
+# 🚀 Future Development
 
 Public Game Lab is intentionally an evolving project.
 
 Potential future work includes:
 
-Stronger network segmentation
-
-Dedicated game-server VLAN
-
-Improved firewall policy
-
-Automated container deployment
-
-Docker Compose
-
-Persistent-data backup strategy
-
-Proxmox backup integration
-
-Centralized logging
-
-Monitoring and alerting
-
-Container health monitoring
-
-Automated updates with controlled testing
-
-Additional games
-
-Improved landing-page design
-
-Service status indicators
-
-Infrastructure-as-Code experimentation
-
-Documented disaster recovery
-
-Further Linux hardening
+- Stronger network segmentation
+- Dedicated game-server VLAN
+- Improved firewall policy
+- Automated container deployment
+- Docker Compose
+- Persistent-data backup strategy
+- Proxmox backup integration
+- Centralized logging
+- Monitoring and alerting
+- Container health monitoring
+- Automated updates with controlled testing
+- Additional games
+- Improved landing-page design
+- Service status indicators
+- Infrastructure-as-Code experimentation
+- Documented disaster recovery
+- Further Linux hardening
 
 The goal is not to add technology simply because it exists.
 
 New components should solve a problem, improve security/reliability, or provide a worthwhile learning opportunity.
 
-📊 Project Status
+---
 
-Status: 🟢 Operational
+# 📊 Project Status
 
-BamBam Labs
+**Status:** 🟢 Operational
 
+## BamBam Labs
+
+```text
 https://bambam-labs.duckdns.org
+```
 
-Rumpus
+## Rumpus
 
+```text
 https://rumpus.bambam-labs.duckdns.org
+```
 
-GameNest
+## GameNest
 
+```text
 https://gamenest.bambam-labs.duckdns.org
+```
 
 The environment is operational and has been validated from outside the local network.
-
-Final Thought
-
-What began as:
-
-"Let's host some games for the family."
-
-became an exercise in:
-
-Networking → Virtualization → Linux → Docker → DNS → TLS → Reverse Proxies → HTML → Troubleshooting → Security → Architecture
-
-That's exactly why I built it.
-
-The games are the product my family sees.
-
-The infrastructure behind them is the project I wanted to learn.
 
 ---
 
 # 🔐 Documentation Security Note
 
-Security was considered when deciding what information to publish in this repository. IP addresses shown in the documentation are private, non-Internet-routable addresses used to explain the lab architecture. Current public IP addresses, credentials, passwords, API tokens, private keys, certificates containing sensitive key material, and other secrets are intentionally excluded.
+Security was considered when deciding what information to publish in this repository.
+
+The internal IP addresses shown in this documentation are **private, non-Internet-routable addresses** used to explain the lab architecture.
+
+Current public IP addresses, credentials, passwords, API tokens, private keys, sensitive certificate material, and other secrets are intentionally excluded.
 
 The goal of this repository is to document **how the system was designed and how the technologies work together without publishing information that would unnecessarily increase the exposure of the live environment.**
+
+---
+
+# Final Thought
+
+What began as:
+
+> **"Let's host some games for the family."**
+
+became an exercise in:
+
+**Networking → Virtualization → Linux → Docker → DNS → TLS → Reverse Proxies → HTML → Troubleshooting → Security → Architecture**
+
+That's exactly why I built it.
+
+**The games are the product my family sees.**
+
+**The infrastructure behind them is the project I wanted to learn.**
